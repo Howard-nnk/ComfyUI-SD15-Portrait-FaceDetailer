@@ -1,0 +1,780 @@
+{
+  "id": "3feae27c-bbcd-4699-8acf-6a505fa19359",
+  "revision": 0,
+  "last_node_id": 20,
+  "last_link_id": 25,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "CheckpointLoaderSimple",
+      "pos": [
+        -1134.8534016883627,
+        -411.9917112064801
+      ],
+      "size": [
+        273.4576171875,
+        98
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            3,
+            16
+          ]
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            1,
+            10,
+            22,
+            23,
+            24
+          ]
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            6,
+            25
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CheckpointLoaderSimple"
+      },
+      "widgets_values": [
+        "realisticVisionV60B1_v51HyperVAE_pruned_fp16.safetensors"
+      ],
+      "widgets_values_named": {
+        "ckpt_name": "realisticVisionV60B1_v51HyperVAE_pruned_fp16.safetensors"
+      }
+    },
+    {
+      "id": 2,
+      "type": "CLIPTextEncode",
+      "pos": [
+        -601.4629097806032,
+        -678.4846877401161
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            7
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "photorealistic, professional portrait photography, one adult woman, solo, single person, half body portrait, waist up, one head, one face, anatomically correct face, natural facial proportions, two eyes, one nose, one mouth, natural facial symmetry, realistic skin texture, long dark brown hair, elegant black blouse, looking at the camera, gentle expression, relaxed shoulders, natural posture, simple neutral background, soft natural window light, sharp focus on face, 85mm portrait photography, realistic colors,young woman"
+      ],
+      "widgets_values_named": {
+        "text": "photorealistic, professional portrait photography, one adult woman, solo, single person, half body portrait, waist up, one head, one face, anatomically correct face, natural facial proportions, two eyes, one nose, one mouth, natural facial symmetry, realistic skin texture, long dark brown hair, elegant black blouse, looking at the camera, gentle expression, relaxed shoulders, natural posture, simple neutral background, soft natural window light, sharp focus on face, 85mm portrait photography, realistic colors,young woman"
+      }
+    },
+    {
+      "id": 5,
+      "type": "EmptyLatentImage",
+      "pos": [
+        -670.994311585914,
+        165.31294036022015
+      ],
+      "size": [
+        270,
+        106
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        768,
+        1024,
+        1
+      ],
+      "widgets_values_named": {
+        "width": 768,
+        "height": 1024,
+        "batch_size": 1
+      }
+    },
+    {
+      "id": 6,
+      "type": "KSampler",
+      "pos": [
+        -44.61184557954681,
+        318.08361612502597
+      ],
+      "size": [
+        270,
+        262
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 3
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 7
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 9
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        675472039264081,
+        "fixed",
+        20,
+        6,
+        "dpmpp_2m",
+        "karras",
+        1
+      ],
+      "widgets_values_named": {
+        "seed": 675472039264081,
+        "control_after_generate": "fixed",
+        "steps": 20,
+        "cfg": 6,
+        "sampler_name": "dpmpp_2m",
+        "scheduler": "karras",
+        "denoise": 1
+      }
+    },
+    {
+      "id": 7,
+      "type": "VAEDecode",
+      "pos": [
+        267.0086598950535,
+        -9.350221909022595
+      ],
+      "size": [
+        140,
+        46
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 4
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 6
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            17
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      }
+    },
+    {
+      "id": 8,
+      "type": "SaveImage",
+      "pos": [
+        1371.9125654747354,
+        -519.5780220971886
+      ],
+      "size": [
+        270,
+        270.0000000000001
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 21
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        "ComfyUI"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "ComfyUI"
+      },
+      "color": "#233",
+      "bgcolor": "#355"
+    },
+    {
+      "id": 9,
+      "type": "CLIPTextEncode",
+      "pos": [
+        -596.9986156128632,
+        -396.5402785159011
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 10
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            9
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "wtwo faces, multiple faces, duplicate face, overlapping faces, fused faces, extra head, duplicate person, multiple people, deformed face, disfigured face, distorted facial features, asymmetrical eyes, extra eyes, extra nose, extra mouth, bad anatomy, deformed body, blurry face, blurry eyes, low quality, cartoon, anime, illustration, watermark, text,old woman"
+      ],
+      "widgets_values_named": {
+        "text": "wtwo faces, multiple faces, duplicate face, overlapping faces, fused faces, extra head, duplicate person, multiple people, deformed face, disfigured face, distorted facial features, asymmetrical eyes, extra eyes, extra nose, extra mouth, bad anatomy, deformed body, blurry face, blurry eyes, low quality, cartoon, anime, illustration, watermark, text,old woman"
+      }
+    },
+    {
+      "id": 12,
+      "type": "FaceDetailer",
+      "pos": [
+        847.0295203946552,
+        -425.7901488580331
+      ],
+      "size": [
+        400,
+        960
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 17
+        },
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 16
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 22
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 25
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 18
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 19
+        },
+        {
+          "name": "bbox_detector",
+          "type": "BBOX_DETECTOR",
+          "link": 14
+        },
+        {
+          "name": "sam_model_opt",
+          "shape": 7,
+          "type": "SAM_MODEL",
+          "link": null
+        },
+        {
+          "name": "segm_detector_opt",
+          "shape": 7,
+          "type": "SEGM_DETECTOR",
+          "link": null
+        },
+        {
+          "name": "detailer_hook",
+          "shape": 7,
+          "type": "DETAILER_HOOK",
+          "link": null
+        },
+        {
+          "name": "scheduler_func_opt",
+          "shape": 7,
+          "type": "SCHEDULER_FUNC",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            21
+          ]
+        },
+        {
+          "name": "cropped_refined",
+          "shape": 6,
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "name": "cropped_enhanced_alpha",
+          "shape": 6,
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": null
+        },
+        {
+          "name": "detailer_pipe",
+          "type": "DETAILER_PIPE",
+          "links": null
+        },
+        {
+          "name": "cnet_images",
+          "shape": 6,
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FaceDetailer"
+      },
+      "widgets_values": [
+        512,
+        true,
+        768,
+        59563562184625,
+        "fixed",
+        20,
+        5.5,
+        "euler",
+        "simple",
+        0.45,
+        7,
+        true,
+        true,
+        0.5,
+        10,
+        3,
+        "center-1",
+        0,
+        0.93,
+        0,
+        0.7,
+        "False",
+        10,
+        "",
+        1,
+        false,
+        20,
+        false,
+        false
+      ],
+      "widgets_values_named": {
+        "guide_size": 512,
+        "guide_size_for": true,
+        "max_size": 768,
+        "seed": 59563562184625,
+        "control_after_generate": "fixed",
+        "steps": 20,
+        "cfg": 5.5,
+        "sampler_name": "euler",
+        "scheduler": "simple",
+        "denoise": 0.45,
+        "feather": 7,
+        "noise_mask": true,
+        "force_inpaint": true,
+        "bbox_threshold": 0.5,
+        "bbox_dilation": 10,
+        "bbox_crop_factor": 3,
+        "sam_detection_hint": "center-1",
+        "sam_dilation": 0,
+        "sam_threshold": 0.93,
+        "sam_bbox_expansion": 0,
+        "sam_mask_hint_threshold": 0.7,
+        "sam_mask_hint_use_negative": "False",
+        "drop_size": 10,
+        "wildcard": "",
+        "cycle": 1,
+        "inpaint_model": false,
+        "noise_mask_feather": 20,
+        "tiled_encode": false,
+        "tiled_decode": false
+      }
+    },
+    {
+      "id": 14,
+      "type": "UltralyticsDetectorProvider",
+      "pos": [
+        374.262963293532,
+        464.2644236855422
+      ],
+      "size": [
+        279.0767578125,
+        78
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "BBOX_DETECTOR",
+          "type": "BBOX_DETECTOR",
+          "links": [
+            14
+          ]
+        },
+        {
+          "name": "SEGM_DETECTOR",
+          "type": "SEGM_DETECTOR",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UltralyticsDetectorProvider"
+      },
+      "widgets_values": [
+        "bbox/face_yolov8m.pt"
+      ],
+      "widgets_values_named": {
+        "model_name": "bbox/face_yolov8m.pt"
+      }
+    },
+    {
+      "id": 16,
+      "type": "CLIPTextEncode",
+      "pos": [
+        147.1604954916622,
+        -637.3184620361485
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 23
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            18
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "natural facial features, detailed eyes, realistic skin texture, subtle makeup"
+      ],
+      "widgets_values_named": {
+        "text": "natural facial features, detailed eyes, realistic skin texture, subtle makeup"
+      }
+    },
+    {
+      "id": 17,
+      "type": "CLIPTextEncode",
+      "pos": [
+        140.58144453735423,
+        -942.6156542719198
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 24
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            19
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "blurry eyes, deformed face, unnatural skin, extra features"
+      ],
+      "widgets_values_named": {
+        "text": "blurry eyes, deformed face, unnatural skin, extra features"
+      }
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      1,
+      2,
+      0,
+      "CLIP"
+    ],
+    [
+      2,
+      5,
+      0,
+      6,
+      3,
+      "LATENT"
+    ],
+    [
+      3,
+      1,
+      0,
+      6,
+      0,
+      "MODEL"
+    ],
+    [
+      4,
+      6,
+      0,
+      7,
+      0,
+      "LATENT"
+    ],
+    [
+      6,
+      1,
+      2,
+      7,
+      1,
+      "VAE"
+    ],
+    [
+      7,
+      2,
+      0,
+      6,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      9,
+      9,
+      0,
+      6,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      10,
+      1,
+      1,
+      9,
+      0,
+      "CLIP"
+    ],
+    [
+      14,
+      14,
+      0,
+      12,
+      6,
+      "BBOX_DETECTOR"
+    ],
+    [
+      16,
+      1,
+      0,
+      12,
+      1,
+      "MODEL"
+    ],
+    [
+      17,
+      7,
+      0,
+      12,
+      0,
+      "IMAGE"
+    ],
+    [
+      18,
+      16,
+      0,
+      12,
+      4,
+      "CONDITIONING"
+    ],
+    [
+      19,
+      17,
+      0,
+      12,
+      5,
+      "CONDITIONING"
+    ],
+    [
+      21,
+      12,
+      0,
+      8,
+      0,
+      "IMAGE"
+    ],
+    [
+      22,
+      1,
+      1,
+      12,
+      2,
+      "CLIP"
+    ],
+    [
+      23,
+      1,
+      1,
+      16,
+      0,
+      "CLIP"
+    ],
+    [
+      24,
+      1,
+      1,
+      17,
+      0,
+      "CLIP"
+    ],
+    [
+      25,
+      1,
+      2,
+      12,
+      3,
+      "VAE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.5363809175255916,
+      "offset": [
+        1343.9062714580186,
+        1298.2389454566419
+      ]
+    },
+    "frontendVersion": "1.59.0"
+  },
+  "version": 0.4
+}
